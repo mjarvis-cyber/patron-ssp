@@ -1,9 +1,9 @@
 #include <Windows.h>
 
-#include <monstars/util.h>
+#include <common/util.h>
 
 
-namespace monstars
+namespace common
 {
 
 Cooldown::Cooldown(uint32_t milliseconds)
@@ -42,7 +42,7 @@ void Cooldown::Wait(bool reset)
 {
     GetSystemTimeAsFileTime(&m_current);
 
-    monstars::Finally([this, reset]() noexcept { if (reset) this->Reset(); });
+    common::Finally([this, reset]() noexcept { if (reset) this->Reset(); });
 
     if (m_current.dwLowDateTime > m_next.dwLowDateTime) return;
 

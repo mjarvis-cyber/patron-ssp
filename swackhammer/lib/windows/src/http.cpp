@@ -1,9 +1,9 @@
 #include <Windows.h>
 
-#include <monstars/logging.h>
-#include <monstars/http.h>
+#include <common/logging.h>
+#include <common/http.h>
 
-namespace monstars
+namespace common
 {
 InternetHandle::InternetHandle(HINTERNET handle) : m_handle(handle) {}
 
@@ -94,4 +94,4 @@ bool HttpClient::PostRequest(const wchar_t* endpoint, const char* data, size_t d
     return false;
 }
 
-}  // namespace monstars
+}  // namespace common

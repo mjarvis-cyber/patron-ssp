@@ -1,8 +1,8 @@
 #include <Windows.h>
 
-#include <monstars/mutex.h>
+#include <common/mutex.h>
 
-namespace monstars
+namespace common
 {
 
 MutexLock::MutexLock(const HANDLE mutex, DWORD timeout) : m_mutex(mutex)
@@ -21,4 +21,4 @@ MutexLock::~MutexLock()
     }
 }
 
-}  // namespace monstars
+}  // namespace common

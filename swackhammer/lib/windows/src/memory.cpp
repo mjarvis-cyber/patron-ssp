@@ -1,8 +1,8 @@
 #include <Windows.h>
 
-#include <monstars/memory.h>
+#include <common/memory.h>
 
-namespace monstars
+namespace common
 {
 
 // when building the release configuration, MSVC really wants to replace these for-loops
@@ -119,4 +119,4 @@ void HeapBuffer::Resize(size_t size)
     }
 }
 
-}  // namespace monstars
+}  // namespace common

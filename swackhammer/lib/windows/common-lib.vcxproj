@@ -13,19 +13,20 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{5cedd867-8925-4943-996d-a3050f0c0ec2}</ProjectGuid>
-    <RootNamespace>patron-installer</RootNamespace>
+    <ProjectGuid>{ebeb48ab-1129-46ff-8356-a0e275c5d17f}</ProjectGuid>
+    <RootNamespace>common-lib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>patron-lib</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -41,8 +42,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir>$(SolutionDir)target\windows\lsass\$(Configuration.toLower())\</OutDir>
-    <IntDir>$(SolutionDir)target\windows\lsass\installer\$(Configuration.toLower())\</IntDir>
+    <OutDir>$(SolutionDir)_export\common-lib\$(Configuration.toLower())\</OutDir>
+    <IntDir>$(SolutionDir)_build\common-lib\$(Configuration.toLower())\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PublicIncludeDirectories>pubinc</PublicIncludeDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PublicIncludeDirectories>pubinc</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -52,23 +59,20 @@
       <ConformanceMode>true</ConformanceMode>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>inc;pubinc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExceptionHandling>false</ExceptionHandling>
       <ControlFlowGuard>false</ControlFlowGuard>
       <AdditionalOptions>/Gs99999999 %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-      <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Secur32.lib;libucrt.lib</AdditionalDependencies>
+      <EntryPointSymbol>DllMain</EntryPointSymbol>
+      <AdditionalDependencies>winhttp.lib;ucrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>inc</AdditionalIncludeDirectories>
-    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -79,9 +83,11 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>inc;pubinc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExceptionHandling>false</ExceptionHandling>
+      <ControlFlowGuard>false</ControlFlowGuard>
       <AdditionalOptions>/Gs99999999 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -90,26 +96,27 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-      <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Secur32.lib;libucrt.lib</AdditionalDependencies>
+      <EntryPointSymbol>DllMain</EntryPointSymbol>
+      <AdditionalDependencies>winhttp.lib;ucrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>inc</AdditionalIncludeDirectories>
-    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\installer.cpp" />
+    <ClCompile Include="src\file.cpp" />
+    <ClCompile Include="src\http.cpp" />
+    <ClCompile Include="src\memory.cpp" />
+    <ClCompile Include="src\object.cpp" />
+    <ClCompile Include="src\mutex.cpp" />
+    <ClCompile Include="src\util.cpp" />
+    <ClInclude Include="src\memory.ipp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="src\installer.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)swackhammer\lib\windows\monstars-lib.vcxproj">
-      <Project>{ebeb48ab-1129-46ff-8356-a0e275c5d17f}</Project>
-    </ProjectReference>
+    <ClInclude Include="pubinc\common\file.h" />
+    <ClInclude Include="pubinc\common\http.h" />
+    <ClInclude Include="pubinc\common\logging.h" />
+    <ClInclude Include="pubinc\common\memory.h" />
+    <ClInclude Include="pubinc\common\mutex.h" />
+    <ClInclude Include="pubinc\common\object.h" />
+    <ClInclude Include="pubinc\common\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

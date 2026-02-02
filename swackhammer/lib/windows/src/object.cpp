@@ -1,8 +1,8 @@
 #include <Windows.h>
 
-#include <monstars/object.h>
+#include <common/object.h>
 
-namespace monstars
+namespace common
 {
 
 ObjectHandle::ObjectHandle(HANDLE handle) : m_handle(handle) {}
@@ -28,4 +28,4 @@ HANDLE ObjectHandle::Release()
     return handle;
 }
 
-}  // namespace monstars
+}  // namespace common

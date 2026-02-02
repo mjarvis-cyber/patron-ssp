@@ -5,12 +5,12 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bang-provider", "bang\src\lsass\provider\bang-provider.vcxproj", "{26860957-1E5D-44D0-BCA4-13DB821108E8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bang-installer", "bang\src\lsass\installer\bang-installer.vcxproj", "{5CEDD867-8925-4943-996D-A3050F0C0EC2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "patron-installer", "bang\src\lsass\installer\patron-installer.vcxproj", "{5CEDD867-8925-4943-996D-A3050F0C0EC2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{26860957-1E5D-44D0-BCA4-13DB821108E8} = {26860957-1E5D-44D0-BCA4-13DB821108E8}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "monstars-lib", "swackhammer\lib\windows\monstars-lib.vcxproj", "{EBEB48AB-1129-46FF-8356-A0E275C5D17F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common-lib", "swackhammer\lib\windows\common-lib.vcxproj", "{EBEB48AB-1129-46FF-8356-A0E275C5D17F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{70BB41EA-FBA8-404D-945E-37DF00DD9202}"
 EndProject

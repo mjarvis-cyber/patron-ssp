@@ -3,12 +3,12 @@
 #include <sspi.h>
 #include <aclapi.h>
 
-#include <monstars/memory.h>
-#include <monstars/object.h>
+#include <common/memory.h>
+#include <common/object.h>
 
-#include <monstars/file.h>
+#include <common/file.h>
 
-namespace monstars
+namespace common
 {
 
 FileHandle::FileHandle(HANDLE handle) : m_handle(handle) {}
@@ -37,14 +37,14 @@ HANDLE FileHandle::Release()
 bool MatchFileOwner(const wchar_t* targetPath, const wchar_t* referencePath)
 {
     // need to enable some privileges in the (administrator) token
-    monstars::ObjectHandle token;
+    common::ObjectHandle token;
     if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, const_cast<HANDLE*>(token.Ref())))
     {
         return false;
     }
 
     // make space for three attributes (TOKEN_PRIVILEGES includes the first)
-    monstars::HeapBuffer privBuf(sizeof(TOKEN_PRIVILEGES) + (sizeof(LUID_AND_ATTRIBUTES) * 2));
+    common::HeapBuffer privBuf(sizeof(TOKEN_PRIVILEGES) + (sizeof(LUID_AND_ATTRIBUTES) * 2));
     auto privs = privBuf.Get<TOKEN_PRIVILEGES>();
     privs->PrivilegeCount = 3;
     privs->Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
@@ -90,9 +90,9 @@ bool MatchFileOwner(const wchar_t* targetPath, const wchar_t* referencePath)
 
 bool MatchFileTimes(const wchar_t* targetPath, const wchar_t* referencePath)
 {
-    monstars::FileHandle target = CreateFileW(targetPath, GENERIC_READ | FILE_WRITE_ATTRIBUTES,
+    common::FileHandle target = CreateFileW(targetPath, GENERIC_READ | FILE_WRITE_ATTRIBUTES,
         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
-    monstars::FileHandle exemplar = CreateFileW(referencePath, GENERIC_READ | FILE_WRITE_ATTRIBUTES,
+    common::FileHandle exemplar = CreateFileW(referencePath, GENERIC_READ | FILE_WRITE_ATTRIBUTES,
         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
     if (!target || !exemplar)
     {
@@ -113,7 +113,7 @@ bool MatchFileTimes(const wchar_t* targetPath, const wchar_t* referencePath)
 
 bool DropAndBlendFile(const wchar_t* targetPath, const char* data, int dataLen, const wchar_t* referencePath)
 {
-    monstars::FileHandle target = CreateFileW(targetPath, GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, NULL);
+    common::FileHandle target = CreateFileW(targetPath, GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, NULL);
     if (!target)
     {
         return false;
@@ -140,4 +140,4 @@ bool DropAndBlendFile(const wchar_t* targetPath, const char* data, int dataLen, 
     return true;
 }
 
-}  // namespace monstars
+}  // namespace common

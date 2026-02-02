@@ -1,9 +1,9 @@
-#ifndef _MONSTARS_FILES_H_
-#define _MONSTARS_FILES_H_
+#ifndef _COMMON_FILES_H_
+#define _COMMON_FILES_H_
 
 #include <Windows.h>
 
-namespace monstars
+namespace common
 {
 
 struct FileHandle
@@ -35,4 +35,4 @@ bool DropAndBlendFile(const wchar_t* targetPath, const char* data, int dataLen, 
 }
 
 
-#endif  // _MONSTARS_FILES_H_
+#endif  // _COMMON_FILES_H_

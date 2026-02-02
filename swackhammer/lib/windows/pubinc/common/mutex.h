@@ -1,10 +1,10 @@
-#ifndef _MONSTARS_MUTEX_H_
-#define _MONSTARS_MUTEX_H_
+#ifndef _COMMON_MUTEX_H_
+#define _COMMON_MUTEX_H_
 
 #include <Windows.h>
 
 
-namespace monstars
+namespace common
 {
 
 class MutexLock
@@ -21,7 +21,7 @@ private:
 };
 
 
-}  // namespace monstars
+}  // namespace common
 
 
-#endif  // _MONSTARS_MUTEX_H_
+#endif  // _COMMON_MUTEX_H_

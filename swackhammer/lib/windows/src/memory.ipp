@@ -1,4 +1,4 @@
-namespace monstars
+namespace common
 {
 
 template <typename T>
@@ -17,4 +17,4 @@ T* HeapBuffer::Get() const
     return static_cast<T*>(m_alloc);
 }
 
-}  // namespace monstars
+}  // namespace common

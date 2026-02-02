@@ -9,7 +9,7 @@
 
 #define STATUS_SUCCESS 0;
 
-constexpr SEC_WCHAR c_PackageName[] = L"monstars";
+constexpr SEC_WCHAR c_PackageName[] = L"common";
 constexpr SEC_WCHAR c_PackageComment[] = L"welcome to the jam!";
 constexpr ULONG c_PackageCapabilities = SECPKG_FLAG_ACCEPT_WIN32_NAME | SECPKG_FLAG_CONNECTION;
 constexpr USHORT c_PackageVersion = 1337;

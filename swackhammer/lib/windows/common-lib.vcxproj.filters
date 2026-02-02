@@ -24,25 +24,25 @@
     <ClInclude Include="src\memory.ipp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\file.h">
+    <ClInclude Include="pubinc\common\file.h">
       <Filter>pubinc</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\http.h">
+    <ClInclude Include="pubinc\common\http.h">
       <Filter>pubinc</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\logging.h">
+    <ClInclude Include="pubinc\common\logging.h">
       <Filter>pubinc</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\memory.h">
+    <ClInclude Include="pubinc\common\memory.h">
       <Filter>pubinc</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\mutex.h">
+    <ClInclude Include="pubinc\common\mutex.h">
       <Filter>pubinc</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\object.h">
+    <ClInclude Include="pubinc\common\object.h">
       <Filter>pubinc</Filter>
     </ClInclude>
-    <ClInclude Include="pubinc\monstars\util.h">
+    <ClInclude Include="pubinc\common\util.h">
       <Filter>pubinc</Filter>
     </ClInclude>
   </ItemGroup>

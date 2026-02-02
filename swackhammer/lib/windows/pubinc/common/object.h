@@ -1,10 +1,10 @@
-#ifndef _MONSTARS_OBJECT_H_
-#define _MONSTARS_OBJECT_H_
+#ifndef _COMMON_OBJECT_H_
+#define _COMMON_OBJECT_H_
 
 #include <Windows.h>
 
 
-namespace monstars
+namespace common
 {
 
 struct ObjectHandle
@@ -26,7 +26,7 @@ private:
     HANDLE m_handle;
 };
     
-}  // namespace monstars
+}  // namespace common
 
 
-#endif  // _MONSTARS_OBJECT_H_
+#endif  // _COMMON_OBJECT_H_

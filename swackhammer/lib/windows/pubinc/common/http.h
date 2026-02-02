@@ -1,5 +1,5 @@
-#ifndef _MONSTARS_HTTP_H_
-#define _MONSTARS_HTTP_H_
+#ifndef _COMMON_HTTP_H_
+#define _COMMON_HTTP_H_
 
 #include <Windows.h>
 #include <winhttp.h>
@@ -12,7 +12,7 @@
     #pragma message("*** WARNING: TLS/HTTPS is disabled for this build ***")
 #endif
 
-namespace monstars
+namespace common
 {
 
 struct InternetHandle
@@ -54,6 +54,6 @@ private:
     InternetHandle m_connection;
 };
     
-}  // namespace monstars
+}  // namespace common
 
-#endif  // _MONSTARS_HTTP_H_
+#endif  // _COMMON_HTTP_H_

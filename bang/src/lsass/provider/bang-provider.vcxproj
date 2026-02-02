@@ -100,7 +100,7 @@
     <ClInclude Include="inc\provider.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)swackhammer\lib\windows\monstars-lib.vcxproj">
+    <ProjectReference Include="$(SolutionDir)swackhammer\lib\windows\common-lib.vcxproj">
       <Project>{ebeb48ab-1129-46ff-8356-a0e275c5d17f}</Project>
     </ProjectReference>
   </ItemGroup>

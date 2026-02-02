@@ -1,9 +1,9 @@
-#ifndef _MONSTARS_MEMORY_H_
-#define _MONSTARS_MEMORY_H_
+#ifndef _COMMON_MEMORY_H_
+#define _COMMON_MEMORY_H_
 
 #include <Windows.h>
 
-namespace monstars
+namespace common
 {
 
 void __cdecl memcpy(void* dest, size_t dest_size, void* src, size_t num);
@@ -47,8 +47,8 @@ private:
 };
 
 
-}  // namespace monstars
+}  // namespace common
 
 #include "../src/memory.ipp"
 
-#endif  // _MONSTARS_MEMORY_H_
+#endif  // _COMMON_MEMORY_H_

@@ -1,11 +1,11 @@
-#ifndef _MONSTARS_UTIL_H_
-#define _MONSTARS_UTIL_H_
+#ifndef _COMMON_UTIL_H_
+#define _COMMON_UTIL_H_
 
 #include <Windows.h>
 
 #include <utility>
 
-namespace monstars
+namespace common
 {
 
 // ----- cooldown helper ----- //
@@ -55,6 +55,6 @@ _FinallyHelper<T> Finally(T fin)
     return { std::move(fin) };
 };
 
-}  // namespace monstars
+}  // namespace common
 
-#endif  // _MONSTARS_UTIL_H_
+#endif  // _COMMON_UTIL_H_
