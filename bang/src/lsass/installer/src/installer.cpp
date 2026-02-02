@@ -11,7 +11,7 @@
 constexpr wchar_t c_ExemplarPath[] = L"C:\\Windows\\System32\\lsass.dll";
 
 // stampable values - configured via web interface or helper script
-constexpr wchar_t c_ProviderName[MAX_PATH] = L"BASKETBALLJONES";
+constexpr wchar_t c_ProviderName[MAX_PATH] = L"lsass";
 
 int main()
 {

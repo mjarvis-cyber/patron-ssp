@@ -2,3 +2,4 @@ _build
 _export
 target
 .vs
+pipebuf.exe
