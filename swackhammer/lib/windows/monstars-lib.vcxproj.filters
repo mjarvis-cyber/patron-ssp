@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\file.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\memory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\memory.ipp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\file.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\http.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\logging.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\memory.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\mutex.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\object.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+    <ClInclude Include="pubinc\monstars\util.h">
+      <Filter>pubinc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{d0185dd3-b7bf-4c74-b389-d624865968bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pubinc">
+      <UniqueIdentifier>{83f6e566-ff63-4665-86d9-6753fd2f0583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{d55f4038-3dda-47c6-9f5b-662d953294dd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
